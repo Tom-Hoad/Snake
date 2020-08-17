@@ -10,18 +10,25 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Snake extends Application {
+    private final static int width = 400;
+
     private Timeline snakeMovement;
 
     @Override
     public void start(Stage stage) {
         stage.setTitle("The Snake Game");
 
+        // Creates the window.
         Pane pane = new Pane();
-        Scene scene = new Scene(pane, 400, 400);
+        pane.setPrefSize(width, width);
+        Scene scene = new Scene(pane, width, width);
 
-        Rectangle snake = new Rectangle(15, 15, Color.BLACK);
-        pane.getChildren().add(snake);
+        // Creates the game area and the snake.
+        Rectangle snake = new Rectangle(16, 16, Color.BLACK);
+        Rectangle gameArea = new Rectangle(width, width, Color.LIGHTGRAY);
+        pane.getChildren().addAll(gameArea, snake);
 
+        // Changes the snakes direction based on a key press.
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.UP) {
                 move(snake, 0, -10);
@@ -39,16 +46,23 @@ public class Snake extends Application {
     }
 
     public void move(Rectangle snake, int xChange, int yChange) {
+        // Resets the direction the snake is going in.
         if (snakeMovement != null) {
             snakeMovement.stop();
         }
 
+        // Moves the snake in the current direction.
         snakeMovement = new Timeline(
                 new KeyFrame(
                         Duration.millis(100),
                         event -> {
                             snake.setX(snake.getX() + xChange);
                             snake.setY(snake.getY() + yChange);
+
+                            // Checks if the snake is on the board.
+                            if (snake.getX() > 400 || snake.getX() < 0 || snake.getY() > 400 || snake.getY() < 0) {
+                                System.out.println("The snake is off the board.");
+                            }
                         }
                 )
         );
