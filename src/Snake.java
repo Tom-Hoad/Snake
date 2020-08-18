@@ -10,9 +10,11 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Snake extends Application {
-    private final static int width = 400;
+    private final static int boardWidth = 512;
+    private final static int snakeWidth = 16;
 
     private Timeline snakeMovement;
+    private int snakeSpeed = 150;
 
     @Override
     public void start(Stage stage) {
@@ -20,24 +22,24 @@ public class Snake extends Application {
 
         // Creates the window.
         Pane pane = new Pane();
-        pane.setPrefSize(width, width);
-        Scene scene = new Scene(pane, width, width);
+        pane.setPrefSize(boardWidth, boardWidth);
+        Scene scene = new Scene(pane, boardWidth, boardWidth);
 
         // Creates the game area and the snake.
-        Rectangle snake = new Rectangle(16, 16, Color.BLACK);
-        Rectangle gameArea = new Rectangle(width, width, Color.LIGHTGRAY);
+        Rectangle snake = new Rectangle(snakeWidth, snakeWidth, Color.BLACK);
+        Rectangle gameArea = new Rectangle(boardWidth, boardWidth, Color.LIGHTGRAY);
         pane.getChildren().addAll(gameArea, snake);
 
         // Changes the snakes direction based on a key press.
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.UP) {
-                move(snake, 0, -10);
+                move(snake, 0, -snakeWidth);
             } else if (e.getCode() == KeyCode.DOWN) {
-                move(snake, 0, 10);
+                move(snake, 0, snakeWidth);
             } else if (e.getCode() == KeyCode.RIGHT) {
-                move(snake, 10, 0);
+                move(snake, snakeWidth, 0);
             } else if (e.getCode() == KeyCode.LEFT) {
-                move(snake, -10, 0);
+                move(snake, -snakeWidth, 0);
             }
         });
 
@@ -54,14 +56,17 @@ public class Snake extends Application {
         // Moves the snake in the current direction.
         snakeMovement = new Timeline(
                 new KeyFrame(
-                        Duration.millis(100),
+                        Duration.millis(snakeSpeed),
                         event -> {
                             snake.setX(snake.getX() + xChange);
                             snake.setY(snake.getY() + yChange);
 
-                            // Checks if the snake is on the board.
-                            if (snake.getX() > 400 || snake.getX() < 0 || snake.getY() > 400 || snake.getY() < 0) {
-                                System.out.println("The snake is off the board.");
+                            // Stops the game if the snake goes off the board.
+                            if (snake.getX() >= boardWidth || snake.getX() < 0 || snake.getY() >= boardWidth || snake.getY() < 0) {
+                                System.out.println("Game Over!");
+                                snake.setX(snake.getX() - xChange);
+                                snake.setY(snake.getY() - yChange);
+                                snakeMovement.stop();
                             }
                         }
                 )
