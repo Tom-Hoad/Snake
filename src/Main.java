@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -7,15 +8,19 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private final Group mainGroup = new Group();
+    private final Group tailGroup = new Group();
     private final Pane layout = new Pane();
-    private final Scene scene = new Scene(layout);
 
     @Override
     public void start(Stage stage) {
+        // Creates the scene and organises groups.
+        mainGroup.getChildren().addAll(layout, tailGroup);
+        Scene scene = new Scene(mainGroup);
         stage.setTitle("The Snake Game");
 
         // Creates the board and snake objects.
-        Game game = new Game();
+        Game game = new Game(tailGroup);
 
         // Creates the game over text.
         Label endLabel = new Label("Game Over!");

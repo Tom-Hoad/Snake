@@ -78,7 +78,10 @@ public class Snake {
                                 game.gameOver();
                             } else if (snake.getX() == game.getFood().getX() && snake.getY() == game.getFood().getY()) {
                                 eatFood();
+                                game.moveTail((int) snake.getX(), (int) snake.getY(), true);
                                 game.getFood().positionFood();
+                            } else {
+                                game.moveTail((int) snake.getX(), (int) snake.getY(), false);
                             }
                         }
                 )

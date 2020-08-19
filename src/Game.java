@@ -1,7 +1,11 @@
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Game {
     private final Rectangle board;
@@ -9,11 +13,15 @@ public class Game {
     private final Snake snake;
     private final Food food;
     private Label endLabel;
+    private Group tailGroup;
+    private Queue<Rectangle> snakeTail;
 
-    public Game() {
+    public Game(Group tailGroup) {
         board = new Rectangle(width, width, Color.LIGHTGRAY);
         this.snake = new Snake();
         this.food = new Food(snake.getWidth());
+        this.tailGroup = tailGroup;
+        this.snakeTail = new LinkedList<>();
     }
 
     // Gets the board.
@@ -43,6 +51,7 @@ public class Game {
 
     // Moves the snake.
     public void move(KeyCode code) {
+        // Hides the game over message.
         if (endLabel.isVisible()) {
             try {
                 Thread.sleep(1000);
@@ -63,6 +72,32 @@ public class Game {
         } else if (code == KeyCode.LEFT) {
             snake.move(-snake.getWidth(), 0, this);
         }
+    }
+
+    // Moves the snake tail.
+    public void moveTail(int x, int y, boolean extend) {
+        if (snakeTail.size() > 0 || extend) {
+            if (extend) {
+                createTail(x, y);
+            }
+            createTail(x, y);
+
+            // Removes the positional end.
+            /*snakeTail.remove();
+
+            // Removes the visual tail.
+            Rectangle lastElement = (Rectangle) tailGroup.getChildren().get(tailGroup.getChildren().size() - 1);
+            lastElement.toBack();
+            tailGroup.getChildren().remove(lastElement);*/
+        }
+    }
+
+    // Creates a tail part.
+    public void createTail(int x, int y) {
+        Rectangle tailPart = new Rectangle(snake.getWidth(), snake.getWidth(), Color.BLACK);
+        tailPart.relocate(x, y);
+        tailGroup.getChildren().add(tailPart);
+        snakeTail.add(tailPart);
     }
 
     // Ends the game.
