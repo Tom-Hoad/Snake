@@ -10,7 +10,7 @@ public class Food {
     private int y;
 
     public Food(int width) {
-        this.food = new Rectangle(width, width, Color.LIGHTGREEN);
+        this.food = new Rectangle(width, width, Color.GREEN);
         this.width = width;
 
         positionFood();

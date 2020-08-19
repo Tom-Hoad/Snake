@@ -13,7 +13,7 @@ public class Snake {
 
     public Snake() {
         this.snake = new Rectangle(width, width, Color.BLACK);
-        this.speed = 50;
+        this.speed = 120;
         this.score = 0;
 
         defaultPosition();
@@ -27,6 +27,17 @@ public class Snake {
     // Gets the width of the snake.
     public int getWidth() {
         return width;
+    }
+
+    // Gets the score.
+    public int getScore() {
+        return score;
+    }
+
+    // Resets the score and speed.
+    public void resetSnake() {
+        speed = 120;
+        score = 0;
     }
 
     // Gets the snake animation.
@@ -65,6 +76,9 @@ public class Snake {
                             // Stops the game if the snake goes off the board.
                             if (snake.getX() >= game.getWidth() || snake.getX() < 0 || snake.getY() >= game.getWidth() || snake.getY() < 0) {
                                 game.gameOver();
+                            } else if (snake.getX() == game.getFood().getX() && snake.getY() == game.getFood().getY()) {
+                                eatFood();
+                                game.getFood().positionFood();
                             }
                         }
                 )

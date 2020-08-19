@@ -3,13 +3,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.Random;
-
 public class Game {
     private final Rectangle board;
     private final int width = 528;
     private final Snake snake;
-    private Food food;
+    private final Food food;
     private Label endLabel;
 
     public Game() {
@@ -46,7 +44,13 @@ public class Game {
     // Moves the snake.
     public void move(KeyCode code) {
         if (endLabel.isVisible()) {
-            endLabel.setVisible(false);
+            try {
+                Thread.sleep(1000);
+                endLabel.setVisible(false);
+                snake.resetSnake();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Changes the snakes direction based on a key press.
@@ -63,7 +67,9 @@ public class Game {
 
     // Ends the game.
     public void gameOver() {
+        endLabel.setText("Game Over! Your score was: " + snake.getScore());
         endLabel.setVisible(!endLabel.isVisible());
+
         snake.defaultPosition();
         snake.getMovement().stop();
     }
