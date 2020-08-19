@@ -77,18 +77,21 @@ public class Game {
     // Moves the snake tail.
     public void moveTail(int x, int y, boolean extend) {
         if (snakeTail.size() > 0 || extend) {
+            // Creates more of the snake.
             if (extend) {
                 createTail(x, y);
+                if (snakeTail.size() == 1) {
+                    createTail(x, y);
+                }
             }
             createTail(x, y);
 
-            // Removes the positional end.
-            /*snakeTail.remove();
+            snakeTail.remove();
 
             // Removes the visual tail.
             Rectangle lastElement = (Rectangle) tailGroup.getChildren().get(tailGroup.getChildren().size() - 1);
             lastElement.toBack();
-            tailGroup.getChildren().remove(lastElement);*/
+            tailGroup.getChildren().remove(tailGroup.getChildren().size() - 1);
         }
     }
 
@@ -102,9 +105,19 @@ public class Game {
 
     // Ends the game.
     public void gameOver() {
+        // Shows the user a message.
         endLabel.setText("Game Over! Your score was: " + snake.getScore());
         endLabel.setVisible(!endLabel.isVisible());
 
+        // Clears the tail.
+        for (int i = 0; i < tailGroup.getChildren().size() - 1; i++) {
+            Rectangle tailPart = (Rectangle) tailGroup.getChildren().get(i);
+            tailPart.toBack();
+        }
+        tailGroup.getChildren().clear();
+        snakeTail = new LinkedList<>();
+
+        // Stops the animation.
         snake.defaultPosition();
         snake.getMovement().stop();
     }
