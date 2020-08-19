@@ -13,6 +13,7 @@ public class Game {
     private final Snake snake;
     private final Food food;
     private Label endLabel;
+    private KeyCode lastCode;
     private final Group tailGroup;
     private Queue<int[]> tailPositions;
 
@@ -63,15 +64,16 @@ public class Game {
         }
 
         // Changes the snakes direction based on a key press.
-        if (code == KeyCode.UP) {
+        if (code == KeyCode.UP && lastCode != KeyCode.DOWN) {
             snake.move(0, -snake.getWidth(), this);
-        } else if (code == KeyCode.DOWN) {
+        } else if (code == KeyCode.DOWN && lastCode != KeyCode.UP) {
             snake.move(0, snake.getWidth(), this);
-        } else if (code == KeyCode.RIGHT) {
+        } else if (code == KeyCode.RIGHT && lastCode != KeyCode.LEFT) {
             snake.move(snake.getWidth(), 0, this);
-        } else if (code == KeyCode.LEFT) {
+        } else if (code == KeyCode.LEFT && lastCode != KeyCode.RIGHT) {
             snake.move(-snake.getWidth(), 0, this);
         }
+        lastCode = code;
     }
 
     // Checks if the snake eats itself.
@@ -109,7 +111,6 @@ public class Game {
         tailPart.relocate(x, y);
         tailGroup.getChildren().add(tailPart);
         tailPositions.add(new int[]{x, y});
-        System.out.println(tailPositions);
     }
 
     // Ends the game.
