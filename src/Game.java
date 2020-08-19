@@ -7,35 +7,34 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-    // Board size is a 33 * 33 grid, each tile being 16px * 16px.
-    private final static int boardWidth = 528;
-    private final static int snakeWidth = 16;
     private final Pane layout = new Pane();
 
     @Override
     public void start(Stage stage) {
         stage.setTitle("The Snake Game");
 
-        // Creates the window.
-        layout.setPrefSize(boardWidth, boardWidth);
-        Scene scene = new Scene(layout, boardWidth, boardWidth);
+        // Creates the board and snake objects.
+        Snake snake = new Snake();
+        Board board = new Board(snake);
 
-        // Creates the game area and the snake.
-        Snake snake = new Snake(snakeWidth);
-        Rectangle gameArea = new Rectangle(boardWidth, boardWidth, Color.LIGHTGRAY);
-        layout.getChildren().addAll(gameArea, snake.getSnake());
-        snake.defaultPosition();
+        // Creates the window.
+        layout.setPrefSize(board.getWidth(), board.getWidth());
+        Scene scene = new Scene(layout, board.getWidth(), board.getWidth());
+
+        // Creates the game area.
+        Rectangle gameArea = new Rectangle(board.getWidth(), board.getWidth(), Color.LIGHTGRAY);
+        layout.getChildren().addAll(gameArea, snake.getShape());
 
         // Changes the snakes direction based on a key press.
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.UP) {
-                snake.move(0, -snakeWidth);
+                snake.move(0, -snake.getWidth(), board.getWidth());
             } else if (e.getCode() == KeyCode.DOWN) {
-                snake.move(0, snakeWidth);
+                snake.move(0, snake.getWidth(), board.getWidth());
             } else if (e.getCode() == KeyCode.RIGHT) {
-                snake.move(snakeWidth, 0);
+                snake.move(snake.getWidth(), 0, board.getWidth());
             } else if (e.getCode() == KeyCode.LEFT) {
-                snake.move(-snakeWidth, 0);
+                snake.move(-snake.getWidth(), 0, board.getWidth());
             }
         });
 

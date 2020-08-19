@@ -7,26 +7,32 @@ import javafx.util.Duration;
 
 public class Snake {
     private final Rectangle snake;
-    private final int width;
+    private final static int width = 16;
     private int speed;
     private int score;
     private Timeline snakeMovement;
 
-    public Snake(int width) {
+    public Snake() {
         this.snake = new Rectangle(width, width, Color.BLACK);
-        this.width = width;
         this.speed = 50;
         this.score = 0;
+
+        defaultPosition();
     }
 
     // Gets the snake shape.
-    public Rectangle getSnake() {
+    public Rectangle getShape() {
         return snake;
     }
 
     // Gets the snake score.
     public int getScore() {
         return score;
+    }
+
+    // Gets the width of the snake.
+    public int getWidth() {
+        return width;
     }
 
     // Sets the initial position of the snake.
@@ -43,7 +49,7 @@ public class Snake {
         score++;
     }
 
-    public void move(int xChange, int yChange) {
+    public void move(int xChange, int yChange, int boardWidth) {
         // Resets the direction the snake is going in.
         if (snakeMovement != null) {
             snakeMovement.stop();
@@ -58,7 +64,7 @@ public class Snake {
                             snake.setY(snake.getY() + yChange);
 
                             // Stops the game if the snake goes off the board.
-                            if (snake.getX() >= 33 * width || snake.getX() < 0 || snake.getY() >= 33 * width || snake.getY() < 0) {
+                            if (snake.getX() >= boardWidth || snake.getX() < 0 || snake.getY() >= boardWidth || snake.getY() < 0) {
                                 gameOver();
                             }
                         }
