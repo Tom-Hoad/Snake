@@ -1,68 +1,49 @@
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Snake extends Application {
-    // Board size is a 33 * 33 grid, each tile being 16px * 16px.
-    private final static int boardWidth = 528;
-    private final static int snakeWidth = 16;
-
+public class Snake {
+    private final Rectangle snake;
+    private final int width;
+    private int speed;
+    private int score;
     private Timeline snakeMovement;
-    private Pane layout = new Pane();
-    private int snakeSpeed = 150;
-    private int snakeScore = 0;
 
-    @Override
-    public void start(Stage stage) {
-        stage.setTitle("The Snake Game");
+    public Snake(int width) {
+        this.snake = new Rectangle(width, width, Color.BLACK);
+        this.width = width;
+        this.speed = 50;
+        this.score = 0;
+    }
 
-        // Creates the window.
-        layout.setPrefSize(boardWidth, boardWidth);
-        Scene scene = new Scene(layout, boardWidth, boardWidth);
+    // Gets the snake shape.
+    public Rectangle getSnake() {
+        return snake;
+    }
 
-        // Creates the game area and the snake.
-        Rectangle snake = new Rectangle(snakeWidth, snakeWidth, Color.BLACK);
-        Rectangle gameArea = new Rectangle(boardWidth, boardWidth, Color.LIGHTGRAY);
-        layout.getChildren().addAll(gameArea, snake);
-        defaultPosition(snake);
-
-        // Changes the snakes direction based on a key press.
-        scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.UP) {
-                move(snake, 0, -snakeWidth);
-            } else if (e.getCode() == KeyCode.DOWN) {
-                move(snake, 0, snakeWidth);
-            } else if (e.getCode() == KeyCode.RIGHT) {
-                move(snake, snakeWidth, 0);
-            } else if (e.getCode() == KeyCode.LEFT) {
-                move(snake, -snakeWidth, 0);
-            }
-        });
-
-        stage.setScene(scene);
-        stage.show();
+    // Gets the snake score.
+    public int getScore() {
+        return score;
     }
 
     // Sets the initial position of the snake.
-    public void defaultPosition(Rectangle snake) {
-        snake.setX(snakeWidth * snakeWidth);
-        snake.setY(snakeWidth * snakeWidth);
+    public void defaultPosition() {
+        snake.setX(width * width);
+        snake.setY(width * width);
     }
 
-    // Changes the speed of the snake.
-    public void changeSpeed(int newSpeed) {
-        snakeSpeed = newSpeed;
+    // The snake eats the food.
+    public void eatFood() {
+        if (speed > 50) {
+            speed = speed - 10;
+        }
+        score++;
     }
 
-    public void move(Rectangle snake, int xChange, int yChange) {
+    public void move(int xChange, int yChange) {
         // Resets the direction the snake is going in.
         if (snakeMovement != null) {
             snakeMovement.stop();
@@ -71,20 +52,14 @@ public class Snake extends Application {
         // Moves the snake in the current direction.
         snakeMovement = new Timeline(
                 new KeyFrame(
-                        Duration.millis(snakeSpeed),
+                        Duration.millis(speed),
                         event -> {
                             snake.setX(snake.getX() + xChange);
                             snake.setY(snake.getY() + yChange);
 
                             // Stops the game if the snake goes off the board.
-                            if (snake.getX() >= boardWidth || snake.getX() < 0 || snake.getY() >= boardWidth || snake.getY() < 0) {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle("Game Over!");
-                                alert.setHeaderText("You finished with a score of: " + snakeScore);
-                                alert.show();
-
-                                defaultPosition(snake);
-                                snakeMovement.stop();
+                            if (snake.getX() >= 33 * width || snake.getX() < 0 || snake.getY() >= 33 * width || snake.getY() < 0) {
+                                gameOver();
                             }
                         }
                 )
@@ -93,8 +68,14 @@ public class Snake extends Application {
         snakeMovement.play();
     }
 
-    // Launches the game.
-    public static void main(String[] args) {
-        launch(args);
+    // Ends the game.
+    public void gameOver() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over!");
+        alert.setHeaderText("You finished with a score of: " + score);
+        alert.show();
+
+        defaultPosition();
+        snakeMovement.stop();
     }
 }
