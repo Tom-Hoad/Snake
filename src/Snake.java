@@ -21,7 +21,7 @@ public class Snake {
     }
 
     // Gets the snake shape.
-    public Rectangle getShape() {
+    public Rectangle getSnake() {
         return snake;
     }
 
