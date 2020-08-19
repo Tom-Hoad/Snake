@@ -1,16 +1,15 @@
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class Snake {
     private final Rectangle snake;
-    private final static int width = 16;
+    private final int width = 16;
     private int speed;
     private int score;
-    private Timeline snakeMovement;
+    private Timeline movement;
 
     public Snake() {
         this.snake = new Rectangle(width, width, Color.BLACK);
@@ -21,18 +20,18 @@ public class Snake {
     }
 
     // Gets the snake shape.
-    public Rectangle getSnake() {
+    public Rectangle getShape() {
         return snake;
-    }
-
-    // Gets the snake score.
-    public int getScore() {
-        return score;
     }
 
     // Gets the width of the snake.
     public int getWidth() {
         return width;
+    }
+
+    // Gets the snake animation.
+    public Timeline getMovement() {
+        return movement;
     }
 
     // Sets the initial position of the snake.
@@ -49,14 +48,14 @@ public class Snake {
         score++;
     }
 
-    public void move(int xChange, int yChange, int boardWidth) {
+    public void move(int xChange, int yChange, Game game) {
         // Resets the direction the snake is going in.
-        if (snakeMovement != null) {
-            snakeMovement.stop();
+        if (movement != null) {
+            movement.stop();
         }
 
         // Moves the snake in the current direction.
-        snakeMovement = new Timeline(
+        movement = new Timeline(
                 new KeyFrame(
                         Duration.millis(speed),
                         event -> {
@@ -64,24 +63,13 @@ public class Snake {
                             snake.setY(snake.getY() + yChange);
 
                             // Stops the game if the snake goes off the board.
-                            if (snake.getX() >= boardWidth || snake.getX() < 0 || snake.getY() >= boardWidth || snake.getY() < 0) {
-                                gameOver();
+                            if (snake.getX() >= game.getWidth() || snake.getX() < 0 || snake.getY() >= game.getWidth() || snake.getY() < 0) {
+                                game.gameOver();
                             }
                         }
                 )
         );
-        snakeMovement.setCycleCount(Timeline.INDEFINITE);
-        snakeMovement.play();
-    }
-
-    // Ends the game.
-    public void gameOver() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Over!");
-        alert.setHeaderText("You finished with a score of: " + score);
-        alert.show();
-
-        defaultPosition();
-        snakeMovement.stop();
+        movement.setCycleCount(Timeline.INDEFINITE);
+        movement.play();
     }
 }
