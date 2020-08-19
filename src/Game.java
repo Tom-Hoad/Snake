@@ -13,15 +13,15 @@ public class Game {
     private final Snake snake;
     private final Food food;
     private Label endLabel;
-    private Group tailGroup;
-    private Queue<Rectangle> snakeTail;
+    private final Group tailGroup;
+    private Queue<int[]> tailPositions;
 
     public Game(Group tailGroup) {
         board = new Rectangle(width, width, Color.LIGHTGRAY);
         this.snake = new Snake();
         this.food = new Food(snake.getWidth());
         this.tailGroup = tailGroup;
-        this.snakeTail = new LinkedList<>();
+        this.tailPositions = new LinkedList<>();
     }
 
     // Gets the board.
@@ -74,24 +74,32 @@ public class Game {
         }
     }
 
+    // Checks if the snake eats itself.
+    public void checkPath(int x, int y) {
+        for (int[] check : tailPositions) {
+            if (check[0] == x && check[1] == y) {
+                gameOver();
+            }
+        }
+    }
+
     // Moves the snake tail.
     public void moveTail(int x, int y, boolean extend) {
-        if (snakeTail.size() > 0 || extend) {
+        if (tailPositions.size() > 0 || extend) {
             // Creates more of the snake.
             if (extend) {
                 createTail(x, y);
-                if (snakeTail.size() == 1) {
+                if (tailPositions.size() == 1) {
                     createTail(x, y);
                 }
             }
             createTail(x, y);
 
-            snakeTail.remove();
-
-            // Removes the visual tail.
+            // Removes the end of the tail.
             Rectangle lastElement = (Rectangle) tailGroup.getChildren().get(tailGroup.getChildren().size() - 1);
             lastElement.toBack();
             tailGroup.getChildren().remove(tailGroup.getChildren().size() - 1);
+            tailPositions.remove();
         }
     }
 
@@ -100,7 +108,8 @@ public class Game {
         Rectangle tailPart = new Rectangle(snake.getWidth(), snake.getWidth(), Color.BLACK);
         tailPart.relocate(x, y);
         tailGroup.getChildren().add(tailPart);
-        snakeTail.add(tailPart);
+        tailPositions.add(new int[]{x, y});
+        System.out.println(tailPositions);
     }
 
     // Ends the game.
@@ -115,7 +124,7 @@ public class Game {
             tailPart.toBack();
         }
         tailGroup.getChildren().clear();
-        snakeTail = new LinkedList<>();
+        tailPositions = new LinkedList<>();
 
         // Stops the animation.
         snake.defaultPosition();

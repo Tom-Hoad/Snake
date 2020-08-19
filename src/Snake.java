@@ -73,7 +73,7 @@ public class Snake {
                             snake.setX(snake.getX() + xChange);
                             snake.setY(snake.getY() + yChange);
 
-                            // Stops the game if the snake goes off the board.
+                            // Checks if the snail goes off the board, eats food or just moves normally.
                             if (snake.getX() >= game.getWidth() || snake.getX() < 0 || snake.getY() >= game.getWidth() || snake.getY() < 0) {
                                 game.gameOver();
                             } else if (snake.getX() == game.getFood().getX() && snake.getY() == game.getFood().getY()) {
@@ -81,6 +81,7 @@ public class Snake {
                                 game.moveTail((int) snake.getX(), (int) snake.getY(), true);
                                 game.getFood().positionFood();
                             } else {
+                                game.checkPath((int) snake.getX(), (int) snake.getY());
                                 game.moveTail((int) snake.getX(), (int) snake.getY(), false);
                             }
                         }
