@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -27,9 +28,9 @@ public class Main extends Application {
 
         // Creates the window.
         layout.setPrefSize(game.getWidth(), game.getWidth());
-        layout.getChildren().addAll(game.getBoard(), game.getSnake().getShape(), endLabel);
+        layout.getChildren().addAll(game.getBoard(), game.getSnake().getShape(), game.getFood().getShape(), endLabel);
 
-        // Changes the snakes direction based on a key press.
+        // Responds to key presses.
         scene.setOnKeyPressed(e -> game.move(e.getCode()));
 
         stage.setScene(scene);
